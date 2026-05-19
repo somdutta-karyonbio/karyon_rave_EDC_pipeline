@@ -1,0 +1,45 @@
+# ── Secrets & credentials ──────────────────────────────────
+.env
+*.env
+*.pem
+*.key
+secrets/
+
+# ── Python ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ── Virtual environments ────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+
+# ── Logs ───────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Report outputs (generated artefacts, not source) ───────
+reports/output/
+
+# ── OS artefacts ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDEs ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Claude Code internals ───────────────────────────────────
+.claude/

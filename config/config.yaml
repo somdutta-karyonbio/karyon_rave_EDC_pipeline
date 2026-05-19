@@ -1,0 +1,45 @@
+# ============================================================
+# Karyon Bio — Liver Fibrosis Clinical Trial
+# Pipeline Configuration
+# ============================================================
+
+database:
+  host: localhost
+  port: 5432
+  name: karyon_rave
+  user: pipeline_user
+  password: "${DB_PASSWORD}"          # set via environment variable
+  pool_size: 5
+  max_overflow: 10
+  connect_timeout: 10
+
+rave:
+  base_url: "https://${RAVE_INSTANCE}.mdsol.com/RaveWebServices"
+  username: "${RAVE_USERNAME}"
+  password: "${RAVE_PASSWORD}"
+  study_oid: "${RAVE_STUDY_OID}"      # e.g. "Karyon_LF_001(Dev)"
+  environment: "${RAVE_ENV}"          # DEV | UAT | PROD
+  timeout: 30                         # seconds per request
+  retry_attempts: 3
+  retry_backoff: 2                    # seconds, exponential
+
+  # RAVE dataset names matching EDC build
+  datasets:
+    demographics:    "Demographics"
+    labs:            "LabResults"
+    fibroscan:       "FibroScan"
+    urinalysis:      "Urinalysis"
+    treatment:       "TreatmentHistory"
+    adverse_events:  "AdverseEvents"
+    consent:         "InformedConsent"
+    visits:          "VisitSchedule"
+
+pipeline:
+  log_level: "INFO"                   # DEBUG | INFO | WARNING | ERROR
+  log_file: "logs/pipeline.log"
+  batch_size: 500                     # records per DB insert batch
+  run_sanitization: true
+  run_compliance: true
+  run_consent_check: true
+  export_reports: true
+  report_output_dir: "reports/output"

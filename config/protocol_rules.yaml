@@ -1,0 +1,150 @@
+# ============================================================
+# Protocol Compliance Rules — Liver Fibrosis Trial
+# Update these values to match the approved protocol version.
+# ============================================================
+
+protocol:
+  title: "Karyon Bio Liver Fibrosis Study"
+  version: "1.0"
+  phase: "II"
+
+# ── Subject eligibility ─────────────────────────────────────
+eligibility:
+  inclusion:
+    age_min: 18
+    age_max: 75
+    fibroscan_min_kpa: 7.1           # ≥ F2 stage
+    alt_uln_multiplier: 1.5          # ALT must be ≥ 1.5× ULN at screening
+    bmi_min: 18.0
+    bmi_max: 40.0
+
+  exclusion:
+    fibroscan_cirrhosis_kpa: 12.5    # F4 decompensated — flag for review
+    active_hbv: true                 # HBsAg positive
+    active_hcv: true                 # HCV RNA detectable
+    pregnancy: true
+    creatinine_max_mgdl: 1.5        # eGFR proxy
+
+# ── Visit schedule & windows (days relative to Day 1) ───────
+visits:
+  - name: "Screening"
+    target_day: -14
+    window_early: -14
+    window_late: -1
+
+  - name: "Baseline"
+    target_day: 1
+    window_early: 0
+    window_late: 0                   # exact
+
+  - name: "Week4"
+    target_day: 28
+    window_early: -3
+    window_late: 3
+
+  - name: "Week12"
+    target_day: 84
+    window_early: -7
+    window_late: 7
+
+  - name: "Week24"
+    target_day: 168
+    window_early: -7
+    window_late: 7
+
+  - name: "Week36"
+    target_day: 252
+    window_early: -7
+    window_late: 7
+
+  - name: "EOT"                      # End of Treatment
+    target_day: 336
+    window_early: -14
+    window_late: 14
+
+  - name: "EOS"                      # End of Study / Follow-up
+    target_day: 392
+    window_early: -14
+    window_late: 14
+
+# ── Lab reference ranges (adults, SI-adjacent) ──────────────
+# Format: [low, high, unit]
+# ULN = upper limit of normal for alert generation
+lab_ranges:
+  ALT:
+    low: 7
+    high: 56
+    uln: 56
+    unit: "U/L"
+  AST:
+    low: 10
+    high: 40
+    uln: 40
+    unit: "U/L"
+  ALP:
+    low: 44
+    high: 147
+    uln: 147
+    unit: "U/L"
+  GGT:
+    low: 9
+    high: 48
+    uln: 48
+    unit: "U/L"
+  total_bilirubin:
+    low: 0.2
+    high: 1.2
+    uln: 1.2
+    unit: "mg/dL"
+  albumin:
+    low: 3.5
+    high: 5.0
+    uln: 5.0
+    unit: "g/dL"
+  INR:
+    low: 0.8
+    high: 1.2
+    uln: 1.2
+    unit: "ratio"
+  creatinine:
+    low: 0.6
+    high: 1.2
+    uln: 1.2
+    unit: "mg/dL"
+  platelets:
+    low: 150
+    high: 400
+    uln: 400
+    unit: "x10^9/L"
+  hemoglobin:
+    low: 11.5
+    high: 17.5
+    uln: 17.5
+    unit: "g/dL"
+  wbc:
+    low: 4.0
+    high: 11.0
+    uln: 11.0
+    unit: "x10^9/L"
+
+# ── FibroScan thresholds (LSM in kPa) ────────────────────────
+fibroscan:
+  f0_f1_max: 7.0
+  f2_min: 7.1
+  f2_max: 9.4
+  f3_min: 9.5
+  f3_max: 12.4
+  f4_min: 12.5
+  cap_steatosis_threshold: 248       # dB/m — S1 onset
+
+# ── Urinalysis alert thresholds ─────────────────────────────
+urinalysis:
+  protein_alert: "2+"               # flag ≥ 2+ protein
+  glucose_alert: "1+"               # flag any glucose
+  blood_alert: "1+"
+
+# ── Consent timing rules ────────────────────────────────────
+consent:
+  max_days_before_screening: 0       # consent must be on or before screening
+  rescreen_requires_new_icf: true
+  current_icf_version: "v3.0"       # flag subjects on older versions
