@@ -325,7 +325,8 @@ def _check_critical_labs(sess, run_id: int, rules: dict):
         except ValueError:
             continue
 
-        uln = lab_rules.get(test.lower(), {}).get("uln", 0)
+        # protocol_rules.yaml keys are uppercase — try uppercase first, then lowercase
+        uln = (lab_rules.get(test) or lab_rules.get(test.lower()) or {}).get("uln", 0)
         threshold = grade3_multipliers[test]
 
         if uln and val >= uln * threshold:
