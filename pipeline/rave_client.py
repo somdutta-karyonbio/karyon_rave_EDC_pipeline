@@ -30,7 +30,7 @@ MDSOL_NS = "http://www.mdsol.com/ns/odm/metadata"
 
 def _load_config(config_path: str = "config/config.yaml") -> dict:
     import re
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         raw = f.read()
     def _sub(m):
         key = m.group(1) or m.group(2)

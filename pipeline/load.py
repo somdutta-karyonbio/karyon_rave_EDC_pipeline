@@ -47,15 +47,26 @@ def _to_bool(val: Any) -> bool | None:
 
 
 def _fibrosis_stage(lsm: float | None) -> str | None:
+    """
+    Metavir fibrosis staging from FibroScan LSM (kPa) — NASH/NAFLD thresholds.
+
+    F0  < 5.5 kPa   No fibrosis
+    F1  5.5–7.0 kPa Portal fibrosis without septa
+    F2  7.1–9.4 kPa Portal fibrosis with few septa (significant fibrosis)
+    F3  9.5–12.4 kPa Bridging fibrosis / numerous septa
+    F4  ≥ 12.5 kPa  Cirrhosis (F4 = cirrhosis in Metavir staging)
+    """
     if lsm is None:
         return None
+    if lsm < 5.5:
+        return "F0"          # No fibrosis
     if lsm < 7.1:
-        return "F0-F1"
+        return "F1"          # Portal fibrosis, no septa
     if lsm < 9.5:
-        return "F2"
+        return "F2"          # Significant fibrosis
     if lsm < 12.5:
-        return "F3"
-    return "F4"
+        return "F3"          # Bridging fibrosis
+    return "F4 (Cirrhosis)"  # F4 = cirrhosis in Metavir; ≥ 12.5 kPa
 
 
 def _steatosis_grade(cap: float | None) -> str | None:
@@ -101,18 +112,31 @@ def _load_subjects(sess, run_id: int, blocked: set[str]) -> dict[str, int]:
         sex_raw = (row["sex"] or "").upper()
         sex = "M" if sex_raw in ("M", "MALE") else "F" if sex_raw in ("F", "FEMALE") else "U"
 
+        # Derive waist-hip ratio if both measurements present
+        waist = _to_num(row.get("waist_cm"))
+        hip   = _to_num(row.get("hip_cm"))
+        whr   = round(waist / hip, 3) if waist and hip and hip > 0 else None
+
         result = sess.execute(
             text(
                 "INSERT INTO clinical.subjects "
                 "(rave_subject_id, site_id, subject_number, date_of_birth, sex, "
                 " race, ethnicity, country, enrollment_date, randomization_date, "
-                " treatment_arm, rave_status) "
+                " treatment_arm, rave_status, "
+                " weight_kg, height_cm, bmi, waist_cm, hip_cm, waist_hip_ratio) "
                 "VALUES (:rave_id, :site, :subnum, :dob, :sex, "
-                "        :race, :ethnic, :country, :enrl, :rand, :arm, :status) "
+                "        :race, :ethnic, :country, :enrl, :rand, :arm, :status, "
+                "        :weight, :height, :bmi, :waist, :hip, :whr) "
                 "ON CONFLICT (rave_subject_id) DO UPDATE SET "
                 "  site_id = EXCLUDED.site_id, "
                 "  treatment_arm = EXCLUDED.treatment_arm, "
                 "  rave_status = EXCLUDED.rave_status, "
+                "  weight_kg = EXCLUDED.weight_kg, "
+                "  height_cm = EXCLUDED.height_cm, "
+                "  bmi = EXCLUDED.bmi, "
+                "  waist_cm = EXCLUDED.waist_cm, "
+                "  hip_cm = EXCLUDED.hip_cm, "
+                "  waist_hip_ratio = EXCLUDED.waist_hip_ratio, "
                 "  updated_at = NOW() "
                 "RETURNING subject_id"
             ),
@@ -129,6 +153,12 @@ def _load_subjects(sess, run_id: int, blocked: set[str]) -> dict[str, int]:
                 "rand":     _parse_date(row["randomization_date"]),
                 "arm":      row["treatment_arm"],
                 "status":   row["rave_status"],
+                "weight":   _to_num(row.get("weight_kg")),
+                "height":   _to_num(row.get("height_cm")),
+                "bmi":      _to_num(row.get("bmi")),
+                "waist":    waist,
+                "hip":      hip,
+                "whr":      whr,
             },
         )
         sid = result.scalar()

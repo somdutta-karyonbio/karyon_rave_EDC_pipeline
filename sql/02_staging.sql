@@ -33,6 +33,12 @@ CREATE TABLE IF NOT EXISTS staging.demographics (
     randomization_date TEXT,
     treatment_arm   TEXT,
     rave_status     TEXT,
+    -- ── Anthropometrics ──────────────────────────────────────
+    weight_kg       TEXT,
+    height_cm       TEXT,
+    bmi             TEXT,
+    waist_cm        TEXT,
+    hip_cm          TEXT,
     loaded_at       TIMESTAMPTZ DEFAULT NOW()
 );
 

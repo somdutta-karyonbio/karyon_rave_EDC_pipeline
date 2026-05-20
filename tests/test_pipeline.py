@@ -153,6 +153,14 @@ def run_test():
         check("KRY-007 missing FibroScan deviation logged", missing_fs >= 1,
               f"{missing_fs} deviation(s)")
 
+        screen_fail = query_count(sess, """
+            SELECT COUNT(*) FROM audit.protocol_deviations
+            WHERE run_id=:r AND rave_subject_id='KRY-009'
+            AND deviation_type='ELIGIBILITY_VIOLATION'
+        """, {"r": run_id})
+        check("KRY-009 screen failure (F1 < F2 threshold) flagged", screen_fail >= 1,
+              f"{screen_fail} deviation(s)")
+
         # ── Load checks ──────────────────────────────────────
         print("\n  Clinical load:")
 
@@ -165,10 +173,17 @@ def run_test():
 
         fibroscan_f3 = query_count(sess, """
             SELECT COUNT(*) FROM clinical.fibroscan
-            WHERE fibrosis_stage IN ('F3','F4')
+            WHERE fibrosis_stage IN ('F3','F4 (Cirrhosis)')
         """)
-        check("Fibrosis stage derived from LSM", fibroscan_f3 >= 1,
-              f"{fibroscan_f3} F3/F4 record(s)")
+        check("Fibrosis stage derived from LSM (F3/F4)", fibroscan_f3 >= 1,
+              f"{fibroscan_f3} F3/F4-cirrhosis record(s)")
+
+        fibroscan_f1 = query_count(sess, """
+            SELECT COUNT(*) FROM clinical.fibroscan
+            WHERE fibrosis_stage = 'F1'
+        """)
+        check("F1 stage captured for screen failure", fibroscan_f1 >= 1,
+              f"{fibroscan_f1} F1 record(s)")
 
         x_uln_set = query_count(sess, """
             SELECT COUNT(*) FROM clinical.labs
@@ -176,6 +191,13 @@ def run_test():
         """)
         check("x_ULN ratio calculated for ALT", x_uln_set >= 1,
               f"{x_uln_set} record(s)")
+
+        whr_set = query_count(sess, """
+            SELECT COUNT(*) FROM clinical.subjects
+            WHERE waist_hip_ratio IS NOT NULL AND weight_kg IS NOT NULL
+        """)
+        check("Anthropometrics loaded (weight, height, WHR)", whr_set >= 7,
+              f"{whr_set} subject(s) with full anthropometric data")
 
         # ── Data queries auto-generated ──────────────────────
         print("\n  Auto-generated data queries:")

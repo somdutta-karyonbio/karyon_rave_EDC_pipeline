@@ -127,15 +127,145 @@ lab_ranges:
     uln: 11.0
     unit: "x10^9/L"
 
-# ── FibroScan thresholds (LSM in kPa) ────────────────────────
+  # ── Expanded liver enzyme panel ──────────────────────────────
+  DIRECT_BILIRUBIN:
+    low: 0.0
+    high: 0.3
+    uln: 0.3
+    unit: "mg/dL"
+  INDIRECT_BILIRUBIN:
+    low: 0.2
+    high: 0.9
+    uln: 0.9
+    unit: "mg/dL"
+  TOTAL_PROTEIN:
+    low: 6.4
+    high: 8.3
+    uln: 8.3
+    unit: "g/dL"
+  GLOBULIN:
+    low: 2.0
+    high: 3.5
+    uln: 3.5
+    unit: "g/dL"
+  LDH:
+    low: 140
+    high: 280
+    uln: 280
+    unit: "U/L"
+  AFP:
+    low: 0.0
+    high: 10.0
+    uln: 10.0
+    unit: "ng/mL"
+  HYALURONIC_ACID:
+    low: 0.0
+    high: 75.0
+    uln: 75.0
+    unit: "ng/mL"
+
+  # ── Cholesterol profile ──────────────────────────────────────
+  TOTAL_CHOLESTEROL:
+    low: 100
+    high: 200
+    uln: 200
+    unit: "mg/dL"
+  LDL_CHOLESTEROL:
+    low: 0
+    high: 100
+    uln: 130
+    unit: "mg/dL"
+  HDL_CHOLESTEROL:
+    low: 40
+    high: 100
+    uln: 100
+    unit: "mg/dL"
+  TRIGLYCERIDES:
+    low: 0
+    high: 150
+    uln: 150
+    unit: "mg/dL"
+  VLDL_CHOLESTEROL:
+    low: 5
+    high: 40
+    uln: 40
+    unit: "mg/dL"
+  NON_HDL_CHOLESTEROL:
+    low: 0
+    high: 130
+    uln: 130
+    unit: "mg/dL"
+
+  # ── Biochemical / metabolic panel ────────────────────────────
+  FASTING_GLUCOSE:
+    low: 70
+    high: 100
+    uln: 125
+    unit: "mg/dL"
+  HBAIC:
+    low: 4.0
+    high: 5.6
+    uln: 6.4
+    unit: "%"
+  INSULIN:
+    low: 2.0
+    high: 25.0
+    uln: 25.0
+    unit: "μIU/mL"
+  CRP:
+    low: 0.0
+    high: 10.0
+    uln: 10.0
+    unit: "mg/L"
+  FERRITIN:
+    low: 12
+    high: 300
+    uln: 300
+    unit: "ng/mL"
+  SERUM_IRON:
+    low: 60
+    high: 170
+    uln: 170
+    unit: "μg/dL"
+  TIBC:
+    low: 250
+    high: 370
+    uln: 370
+    unit: "μg/dL"
+  URIC_ACID:
+    low: 3.5
+    high: 7.2
+    uln: 7.2
+    unit: "mg/dL"
+
+  # ── Anthropometric limits ─────────────────────────────────────
+  BMI:
+    low: 18.0
+    high: 40.0
+    uln: 40.0
+    unit: "kg/m²"
+
+# ── FibroScan thresholds (LSM in kPa) — Metavir staging for NASH/NAFLD ──────
+# Reference: EASL-ALEH Clinical Practice Guidelines (2015); M2-BF probe values
+#
+# Stage  Histology                          LSM range (kPa)
+# ─────  ─────────────────────────────────  ───────────────
+# F0     No fibrosis                        < 5.5
+# F1     Portal fibrosis, no septa          5.5 – 7.0
+# F2     Portal fibrosis with few septa     7.1 – 9.4   ← inclusion minimum
+# F3     Bridging fibrosis                  9.5 – 12.4
+# F4     Cirrhosis                          ≥ 12.5       ← flag for review
 fibroscan:
-  f0_f1_max: 7.0
-  f2_min: 7.1
+  f0_max: 5.4                        # F0: no fibrosis
+  f1_min: 5.5
+  f1_max: 7.0                        # F1: portal fibrosis, no septa
+  f2_min: 7.1                        # inclusion criterion minimum (≥ F2)
   f2_max: 9.4
   f3_min: 9.5
   f3_max: 12.4
-  f4_min: 12.5
-  cap_steatosis_threshold: 248       # dB/m — S1 onset
+  f4_min: 12.5                       # F4 = cirrhosis (Metavir)
+  cirrhosis_kpa: 12.5                # flag for safety review (≥ F4)
+  cap_steatosis_threshold: 248       # dB/m — S1 steatosis onset
 
 # ── Urinalysis alert thresholds ─────────────────────────────
 urinalysis:

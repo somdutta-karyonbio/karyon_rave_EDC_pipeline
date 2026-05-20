@@ -28,6 +28,12 @@ DEMOGRAPHICS_MAP = {
     "ARM":        "treatment_arm",
     "SUBNUM":     "subject_number",
     "INITIALS":   "initials",
+    # Anthropometrics
+    "WEIGHT":     "weight_kg",
+    "HEIGHT":     "height_cm",
+    "BMI":        "bmi",
+    "WAIST":      "waist_cm",
+    "HIP":        "hip_cm",
 }
 
 CONSENT_MAP = {

@@ -29,7 +29,7 @@ DATE_FORMATS = ["%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%m/%d/%Y", "%Y%m%d"]
 
 
 def _load_rules(config_path: str = "config/protocol_rules.yaml") -> dict:
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 

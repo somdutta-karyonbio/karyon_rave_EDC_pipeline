@@ -15,7 +15,7 @@ _Session = None
 
 
 def _load_config(config_path: str = "config/config.yaml") -> dict:
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         raw = f.read()
     # Expand $VAR and ${VAR} patterns from environment
     import re

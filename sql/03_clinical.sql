@@ -19,6 +19,13 @@ CREATE TABLE IF NOT EXISTS clinical.subjects (
     randomization_date  DATE,
     treatment_arm       TEXT,
     rave_status         TEXT,
+    -- ── Anthropometrics ──────────────────────────────────────
+    weight_kg           NUMERIC(5,1),
+    height_cm           NUMERIC(5,1),
+    bmi                 NUMERIC(5,2),
+    waist_cm            NUMERIC(5,1),
+    hip_cm              NUMERIC(5,1),
+    waist_hip_ratio     NUMERIC(4,3),   -- derived: waist / hip
     created_at          TIMESTAMPTZ DEFAULT NOW(),
     updated_at          TIMESTAMPTZ DEFAULT NOW()
 );
